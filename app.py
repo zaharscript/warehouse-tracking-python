@@ -1,14 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import psycopg2
-from datetime import datetime
 import os
 from dotenv import load_dotenv
 
+env_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path=env_path)
 
-load_dotenv()
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from datetime import datetime
+import psycopg2
+
 
 app = Flask(__name__)
-app.secret_key = "supersecret"
+
+app.secret_key = os.getenv("SECRET_KEY", "fallback_secret")
 
 # === CONFIG ===
 DB_CONFIG = {
