@@ -1,1 +1,22 @@
+# Python cache / compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environment files
 .env
+.flaskenv
+
+# Virtual environments
+venv/
+.venv/
+
+# System / IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs and temporary files
+*.log

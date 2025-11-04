@@ -1,18 +1,24 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 import psycopg2
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "supersecret"
 
 # === CONFIG ===
 DB_CONFIG = {
-    "host": "localhost",
-    "database": "warehouse_racking",
-    "user": "postgres",
-    "password": "12VIVhGoQfei76T8",
-    "port": "5432"
+    "host": os.getenv("DB_HOST", "localhost"),
+    "database": os.getenv("DB_NAME", "warehouse_db"),
+    "user": os.getenv("DB_USER", "postgres"),
+    "password": os.getenv("DB_PASSWORD", ""),
+    "port": os.getenv("DB_PORT", "5432")
 }
+
 
 def get_conn():
     return psycopg2.connect(**DB_CONFIG)
