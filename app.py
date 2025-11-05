@@ -7,6 +7,7 @@ load_dotenv(dotenv_path=env_path)
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from datetime import datetime
 import psycopg2
+from urllib.parse import urlparse
 
 
 app = Flask(__name__)
@@ -14,13 +15,28 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "fallback_secret")
 
 # === CONFIG ===
-DB_CONFIG = {
-    "host": os.getenv("DB_HOST", "localhost"),
-    "database": os.getenv("DB_NAME", "warehouse_db"),
-    "user": os.getenv("DB_USER", "postgres"),
-    "password": os.getenv("DB_PASSWORD", ""),
-    "port": os.getenv("DB_PORT", "5432")
-}
+# Railway provides DATABASE_URL, but also support individual variables for local dev
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    # Parse Railway's DATABASE_URL
+    url = urlparse(DATABASE_URL)
+    DB_CONFIG = {
+        "host": url.hostname,
+        "database": url.path[1:],  # Remove leading slash
+        "user": url.username,
+        "password": url.password,
+        "port": url.port or 5432
+    }
+else:
+    # Fallback to individual environment variables (for local development)
+    DB_CONFIG = {
+        "host": os.getenv("DB_HOST", "localhost"),
+        "database": os.getenv("DB_NAME", "warehouse_db"),
+        "user": os.getenv("DB_USER", "postgres"),
+        "password": os.getenv("DB_PASSWORD", ""),
+        "port": os.getenv("DB_PORT", "5432")
+    }
 
 
 def get_conn():
