@@ -74,20 +74,20 @@ def get_location_data():
 # Routes
 # ============================================
 
-@app.route("/")
-def index():
-    conn = get_conn()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT serial_number, kanban_location, status, last_update_in, last_update_out
-        FROM warehouse_db
-    """)
-    rows = cur.fetchall()
-    conn.close()
-    return render_template("index.html", items=rows)
+# @app.route("/")
+# def index():
+#     conn = get_conn()
+#     cur = conn.cursor()
+#     cur.execute("""
+#         SELECT serial_number, kanban_location, status, last_update_in, last_update_out
+#         FROM warehouse_db
+#     """)
+#     rows = cur.fetchall()
+#     conn.close()
+#     return render_template("index.html", items=rows)
 
 
-@app.route("/racking", methods=["GET"])
+@app.route("/", methods=["GET"])
 def racking_view():
     rows, location_data = get_location_data()
     active_tab = request.args.get("tab", "registration")
