@@ -7,6 +7,7 @@ load_dotenv(dotenv_path=env_path)
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from datetime import datetime
 import psycopg2
+from psycopg2.extras import RealDictCursor
 from urllib.parse import urlparse
 
 
@@ -40,7 +41,7 @@ else:
 
 
 def get_conn():
-    return psycopg2.connect(**DB_CONFIG)
+    return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
 
 
 # ============================================
@@ -154,7 +155,7 @@ def search():
 def add_item():
     serial_number = request.form.get("serial_number")
     kanban_location = request.form.get("kanban_location")
-    status = request.form.get("Status")
+    status = request.form.get("status")
     now = datetime.now()
 
     if not serial_number or not kanban_location or not status:

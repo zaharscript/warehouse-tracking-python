@@ -143,7 +143,7 @@
                                 <tr>
                                     <th>Serial Number</th>
                                     <th>
-                                        {% if search_result.Last_Update_Out %}
+                                        {% if search_result.last_update_out %}
                                         Last Location
                                         {% else %}
                                         Location
@@ -151,7 +151,7 @@
                                     </th>
                                     <th>Status</th>
                                     <th>
-                                        {% if search_result.Last_Update_Out %}
+                                        {% if search_result.last_update_out %}
                                         Date Out
                                         {% else %}
                                         Date In
@@ -163,7 +163,7 @@
                                 <tr>
                                     <td>{{ search_result.serial_number }}</td>
                                     <td>{{ search_result.kanban_location }}</td>
-                                    <td>{{ search_result.Status }}</td>
+                                    <td>{{ search_result.status }}</td>
                                     <td>
                                         {% if search_result.last_update_out %}
                                         {{ search_result.last_update_out }}
@@ -180,7 +180,7 @@
                     {% if search_result and not search_result.last_update_out %}
                     <form method="POST" action="{{ url_for('push_out') }}">
                         <input type="hidden" name="serial_number" id="serial_number_input"
-                            value="{{ search_result.Serial_Number }}">
+                            value="{{ search_result.serial_number }}">
                         <div class="form-group">
                             <button type="submit" class="btn btn-push-out">Push Out From Slot</button>
                         </div>
@@ -202,12 +202,7 @@
                 <div class="warehouse-map" id="warehouseMap">
                     <div class="container">
                         <div class="controls">
-                            <!-- <input type="text" class="search-box" id="location"
-                                placeholder="Search location ID (e.g., R1_A4_12)"> -->
-                            <!-- <button class="control-btn" onclick="filterStatus('all')">Show All</button>
-                            <button class="control-btn" onclick="filterStatus('occupied')">Occupied Only</button>
-                            <button class="control-btn" onclick="filterStatus('available')">Available Only</button>
-                            <button class="control-btn" onclick="randomizeData()">Randomize Data</button> -->
+
                             <button class="control-btn" onclick="refreshMapData()">🔄 Refresh Map</button>
                         </div>
 
@@ -279,11 +274,8 @@
                 <script src="{{ url_for('static', filename='js/warehouse.js') }}"></script>
                 <script src="{{ url_for('static', filename='js/html5-qrcode.min.js') }}"></script>
                 <script src="{{ url_for('static', filename='js/warehouse-qr.js') }}"></script>
-
                 <script src="https://unpkg.com/html5-qrcode"></script>
-                <script>
 
-                </script>
 </body>
 cop
 
