@@ -161,14 +161,14 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{{ search_result.Serial_Number }}</td>
-                                    <td>{{ search_result.Kanban_Location }}</td>
+                                    <td>{{ search_result.serial_number }}</td>
+                                    <td>{{ search_result.kanban_location }}</td>
                                     <td>{{ search_result.Status }}</td>
                                     <td>
-                                        {% if search_result.Last_Update_Out %}
-                                        {{ search_result.Last_Update_Out }}
+                                        {% if search_result.last_update_out %}
+                                        {{ search_result.last_update_out }}
                                         {% else %}
-                                        {{ search_result.Last_Update_In }}
+                                        {{ search_result.last_update_in }}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -177,7 +177,7 @@
                     </div>
 
                     <!-- Push Out Button -->
-                    {% if search_result and not search_result.Last_Update_Out %}
+                    {% if search_result and not search_result.last_update_out %}
                     <form method="POST" action="{{ url_for('push_out') }}">
                         <input type="hidden" name="serial_number" id="serial_number_input"
                             value="{{ search_result.Serial_Number }}">
