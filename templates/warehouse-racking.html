@@ -15,7 +15,7 @@
         <!-- Header with Navigation and Statistics -->
         <div class="header">
             <a href="http://192.168.1.11:5000/racking" style="text-decoration: none; color: inherit;">
-                <h1>3rd Party Racking Management</h1>
+                <h1>Warehouse Racking Management</h1>
             </a>
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -126,7 +126,7 @@
                             </div>
 
                             <div class="form-group" style="flex: 1; display: flex; align-items: flex-end;">
-                                <button type="submit" class="btn btn-search" onclick="findRecord()">Find Record
+                                <button type="submit" class="btn btn-search" onclick="">Find Record
                                     🔍</button>
                             </div>
                             <div class="form-group" style="flex: 1; display: flex; align-items: flex-end;">
@@ -177,7 +177,7 @@
                     </div>
 
                     <!-- Push Out Button -->
-                    {% if search_result and not search_result.last_update_out %}
+                    {% if not search_result.last_update_out %}
                     <form method="POST" action="{{ url_for('push_out') }}">
                         <input type="hidden" name="serial_number" id="serial_number_input"
                             value="{{ search_result.serial_number }}">

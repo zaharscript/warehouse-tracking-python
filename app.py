@@ -41,7 +41,9 @@ else:
 
 
 def get_conn():
-    return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
+    # return psycopg2.connect(**DB_CONFIG, cursor_factory=RealDictCursor)
+    return psycopg2.connect(**DB_CONFIG)
+
 
 
 # ============================================
@@ -99,53 +101,6 @@ def racking_view():
                            location_data=location_data,
                            active_tab=active_tab,
                            error_serial=error_serial)
-
-
-# ============================================
-# Search route
-# ============================================
-@app.route("/search", methods=["POST"])
-def search():
-    serial_number = request.form.get("serial_number")
-
-    if not serial_number:
-        flash("No serial number provided.")
-        return redirect(url_for("racking_view", tab="search"))
-
-    rows, location_data = get_location_data()
-
-    conn = get_conn()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT serial_number, kanban_location, status, last_update_in, last_update_out
-        FROM warehouse_db
-        WHERE serial_number = %s
-    """, (serial_number,))
-    row = cur.fetchone()
-
-    if not row:
-        cur.execute("""
-            SELECT serial_number, kanban_location, status, last_update_in, last_update_out
-            FROM warehouse_db_old
-            WHERE serial_number = %s
-        """, (serial_number,))
-        row = cur.fetchone()
-
-    conn.close()
-
-    if row:
-        flash(f"Serial number {serial_number} found.", "success")
-        return render_template(
-            "warehouse-racking.html",
-            search_result=row,
-            location_data=location_data,
-            items=rows,
-            active_tab="search"
-        )
-    else:
-        flash(f"Serial number {serial_number} not found!", "error")
-        return redirect(url_for("racking_view", tab="search", error_serial=serial_number))
 
 
 # ============================================
@@ -384,6 +339,55 @@ def register_dummy():
 
 
 # ============================================
+# Search route
+# ============================================
+@app.route("/search", methods=["POST"])
+def search():
+    serial_number = request.form.get("serial_number")
+
+    if not serial_number:
+        flash("No serial number provided.")
+        return redirect(url_for("racking_view", tab="search"))
+
+    rows, location_data = get_location_data()
+
+    conn = get_conn()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+
+    cur.execute("""
+        SELECT serial_number, kanban_location, status, last_update_in, last_update_out
+        FROM warehouse_db
+        WHERE serial_number = %s
+    """, (serial_number,))
+    row = cur.fetchone()
+
+    if not row:
+        cur.execute("""
+            SELECT serial_number, kanban_location, status, last_update_in, last_update_out
+            FROM warehouse_db_old
+            WHERE serial_number = %s
+        """, (serial_number,))
+        row = cur.fetchone()
+
+    conn.close()
+
+    if row:
+        flash(f"Serial number {serial_number} found.", "success")
+        return render_template(
+            "warehouse-racking.html",
+            search_result=row,
+            location_data=location_data,
+            items=rows,
+            active_tab="search"
+        )
+    else:
+        flash(f"Serial number {serial_number} not found!", "error")
+        return redirect(url_for("racking_view", tab="search", error_serial=serial_number))
+
+
+
+# ============================================
 # Push out (archive)
 # ============================================
 @app.route("/push_out", methods=["POST"])
@@ -395,6 +399,7 @@ def push_out():
 
     conn = get_conn()
     cur = conn.cursor()
+
     try:
         cur.execute("""
             SELECT serial_number, kanban_location, status, last_update_in
